@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Produto | Mr Pratas</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: 'Segoe UI', sans-serif;
+      background: #0a021c;
+      color: white;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #13032e;
+      padding: 30px;
+      border-radius: 15px;
+      border: 2px solid #b867ff;
+      box-shadow: 0 0 20px #b867ff44;
+    }
+
+    h1 {
+      color: #b867ff;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .product-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .main-image {
+      flex: 1;
+      max-width: 50%;
+    }
+
+    .main-image img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      border: 1px solid #b867ff;
+    }
+
+    .additional-images {
+      flex: 0 0 30%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .additional-images img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      border: 1px solid #b867ff;
+    }
+
+    .info {
+      margin-top: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #ccc;
+    }
+
+    .quantity-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .quantity-container button {
+      padding: 10px;
+      font-size: 18px;
+      border-radius: 6px;
+      border: 1px solid #b867ff;
+      background: #1a0939;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .quantity-container input {
+      width: 60px;
+      text-align: center;
+      padding: 5px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #b867ff;
+      background: #1a0939;
+      color: white;
+    }
+
+    .total {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #b867ff;
+    }
+
+    .estoque {
+      font-size: 14px;
+      color: #aaa;
+      margin-bottom: 15px;
+    }
+
+    .estoque.baixo {
+      color: #ff4d4d;
+      font-weight: bold;
+    }
+
+    .pix-info {
+      font-size: 14px;
+      color: #999;
+      margin-top: 10px;
+    }
+
+    .btns {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-primary {
+      background: white;
+      color: black;
+    }
+
+    .btn-secondary {
+      background: #b867ff;
+      color: white;
+    }
+
+    .btn:hover {
+      opacity: 0.8;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      .product-content {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .main-image {
+        max-width: 100%;
+      }
+
+      .additional-images {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        display: flex;
+        margin-top: 20px;
+      }
+
+      .additional-images img {
+        width: 45%;
+      }
+
+      .btns {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .quantity-container input {
+        width: 80px;
+      }
+
+      .total {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="nome">Nome do Produto</h1>
+    <div class="product-content">
+      <div class="main-image">
+        <img id="img" src="" alt="Produto" />
+      </div>
+      <div class="additional-images" id="imagens-adicionais">
+        <!-- As imagens adicionais serão inseridas dinamicamente -->
+      </div>
+    </div>
+
+    <div class="info">
+      <div class="product-price" id="preco">R$0,00</div>
+      <div class="estoque" id="estoque-info">Estoque disponível: <span id="estoque">0</span> unidades</div>
+
+      <label for="quantidade">Quantidade:</label>
+      <div class="quantity-container">
+        <button id="btn-menos">−</button>
+        <input type="number" id="quantidade" min="1" value="1" />
+        <button id="btn-mais">+</button>
+      </div>
+
+      <div id="tamanho-container" class="tamanho-opcoes" style="display: none;">
+        <p>Escolha o tamanho:</p>
+        <input type="radio" name="tamanho" id="t60" value="60cm">
+        <label for="t60">60cm</label>
+        <input type="radio" name="tamanho" id="t70" value="70cm">
+        <label for="t70">70cm</label>
+      </div>
+
+      <div class="total">Total: <span id="total">R$0,00</span></div>
+      <div class="pix-info">À vista no PIX</div>
+
+      <div class="product-description" id="descricao-produto"></div>
+    </div>
+
+    <div class="btns">
+      <button class="btn btn-primary" onclick="comprarAgora()">Comprar Agora</button>
+      <button class="btn btn-secondary" onclick="adicionarAoCarrinho()">Adicionar ao Carrinho</button>
+    </div>
+  </div>
+
+  <script>
+    const dados = JSON.parse(localStorage.getItem('produtoSelecionado'));
+    const nome = document.getElementById('nome');
+    const preco = document.getElementById('preco');
+    const img = document.getElementById('img');
+    const total = document.getElementById('total');
+    const quantidade = document.getElementById('quantidade');
+    const estoqueSpan = document.getElementById('estoque');
+    const estoqueInfo = document.getElementById('estoque-info');
+    const tamanhoContainer = document.getElementById('tamanho-container');
+    const descricaoProduto = document.getElementById('descricao-produto');
+    const imagensAdicionais = document.getElementById('imagens-adicionais');
+    const btnMais = document.getElementById('btn-mais');
+    const btnMenos = document.getElementById('btn-menos');
+
+    let precoNumerico = 0;
+
+    const imagensProdutos = {
+      "Corrente Grumet": ["imagens/grumet3mm01.png", "grumet2.jpg"],
+      "Corrente Fina": ["fina1.jpg", "fina2.jpg"],
+      "Corrente Italiana": ["italiana1.jpg", "italiana2.jpg"],
+      "Corrente Baiana": ["imagens/correntebaiana.png", "imagens/baianamao.png"],
+      "Corrente Quadrada": ["quadrada1.jpg", "quadrada2.jpg"],
+      "Corrente Elos": ["elos1.jpg", "elos2.jpg"],
+      "Anel Vazado": ["anel_vazado1.jpg", "anel_vazado2.jpg"],
+      "Anel Solitário": ["anel_solitario1.jpg", "anel_solitario2.jpg"],
+      "Anel Trabalhado": ["anel_trabalhado1.jpg", "anel_trabalhado2.jpg"],
+      "Anel Fino": ["anel_fino1.jpg", "anel_fino2.jpg"],
+      "Anel Duplo": ["anel_duplo1.jpg", "anel_duplo2.jpg"],
+      "Anel Masculino": ["anel_masculino1.jpg", "anel_masculino2.jpg"],
+      "Pulseira Cordão Baiano": ["pulseira_baiano1.jpg", "pulseira_baiano2.jpg"]
+    };
+
+    function setDescricao(produto) {
+      const lower = produto.toLowerCase();
+      if (lower.includes("grumet")) {
+        return `A corrente Grumet é ideal para quem busca sofisticação e durabilidade. Feita em prata 925, ela é resistente e possui acabamento refinado.`;
+      } else if (lower.includes("fina")) {
+        return `A corrente Fina é o equilíbrio perfeito entre elegância e delicadeza. Com design discreto, ela complementa qualquer estilo.`;
+      } else if (lower.includes("italiana")) {
+        return `A Corrente Italiana é marcada por seu formato e brilho únicos, trazendo modernidade e luxo. Perfeita para um look mais sofisticado.`;
+      } else if (lower.includes("baiana")) {
+        return `A Corrente Baiana é robusta e cheia de personalidade. Feita em prata 925, combina elegância e resistência.`;
+      } else if (lower.includes("anel vazado")) {
+        return `O Anel Vazado é um clássico do design contemporâneo, combinando estilo minimalista e sofisticação.`;
+      } else if (lower.includes("anel solitário")) {
+        return `O Anel Solitário é símbolo de união e compromisso. Perfeito para marcar momentos especiais.`;
+      } else if (lower.includes("pulseira cordão baiano")) {
+        return `A Pulseira Cordão Baiano é a escolha perfeita para quem busca um toque de personalidade e estilo. Com acabamento detalhado, ela é feita para durar.`;
+      } else {
+        return `Feito em prata 925 legítima, este produto combina durabilidade e elegância em cada detalhe.`;
+      }
+    }
+
+    if (dados) {
+      nome.innerText = dados.nome;
+      preco.innerText = dados.preco;
+      img.src = dados.img;
+      precoNumerico = parseFloat(dados.preco.replace('R$', '').replace(',', '.'));
+      estoqueSpan.innerText = dados.estoque || 20;
+
+      if (dados.estoque <= 5) {
+        estoqueInfo.classList.add("baixo");
+      }
+
+      if (dados.nome.includes("Grumet") || dados.nome.includes("Fina") || dados.nome.includes("Italiana")) {
+        tamanhoContainer.style.display = 'block';
+      }
+
+      descricaoProduto.innerHTML = `<p><strong>Sobre o Produto:</strong></p><p>${setDescricao(dados.nome)}</p>`;
+
+      const imagens = imagensProdutos[dados.nome] || [];
+      imagens.forEach(src => {
+        const imgElement = document.createElement('img');
+        imgElement.src = src;
+        imgElement.alt = `Imagem adicional de ${dados.nome}`;
+        imagensAdicionais.appendChild(imgElement);
+      });
+
+      atualizarTotal();
+    }
+
+    quantidade.addEventListener('input', () => {
+      const qtd = parseInt(quantidade.value) || 1;
+      if (qtd > parseInt(estoqueSpan.innerText)) {
+        quantidade.value = estoqueSpan.innerText;
+        alert("Você não pode adicionar mais unidades do que o disponível em estoque.");
+      }
+      atualizarTotal();
+    });
+
+    btnMais.addEventListener('click', () => {
+      const qtd = parseInt(quantidade.value) || 1;
+      if (qtd < parseInt(estoqueSpan.innerText)) {
+        quantidade.value = qtd + 1;
+        atualizarTotal();
+      }
+    });
+
+    btnMenos.addEventListener('click', () => {
+      const qtd = parseInt(quantidade.value) || 1;
+      if (qtd > 1) {
+        quantidade.value = qtd - 1;
+        atualizarTotal();
+      }
+    });
+
+    function atualizarTotal() {
+      const qtd = parseInt(quantidade.value) || 1;
+      const valorTotal = qtd * precoNumerico;
+      total.innerText = `R$${valorTotal.toFixed(2).replace('.', ',')}`;
+    }
+
+    function adicionarAoCarrinho() {
+      const qtd = parseInt(quantidade.value) || 1;
+      const tamanhoSelecionado = document.querySelector('input[name="tamanho"]:checked');
+      const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+
+      if (nome.innerText.includes("Grumet") || nome.innerText.includes("Fina") || nome.innerText.includes("Italiana")) {
+        if (!tamanhoSelecionado) {
+          alert("Você precisa escolher o tamanho da corrente (60cm ou 70cm).");
+          return;
+        }
+      }
+
+      const tamanho = tamanhoSelecionado ? tamanhoSelecionado.value : "";
+
+      carrinho.push({
+        nome: dados.nome,
+        preco: precoNumerico,
+        img: dados.img,
+        quantidade: qtd,
+        tamanho: tamanho
+      });
+
+      localStorage.setItem('carrinho', JSON.stringify(carrinho));
+      window.location.href = 'carrinho.html';
+    }
+
+    function comprarAgora() {
+      const qtd = parseInt(quantidade.value) || 1;
+      const tamanhoSelecionado = document.querySelector('input[name="tamanho"]:checked');
+
+      if (nome.innerText.includes("Grumet") || nome.innerText.includes("Fina") || nome.innerText.includes("Italiana")) {
+        if (!tamanhoSelecionado) {
+          alert("Você precisa escolher o tamanho da corrente (60cm ou 70cm).");
+          return;
+        }
+      }
+
+      const tamanho = tamanhoSelecionado ? tamanhoSelecionado.value : "";
+
+      const carrinho = [{
+        nome: dados.nome,
+        preco: precoNumerico,
+        img: dados.img,
+        quantidade: qtd,
+        tamanho: tamanho
+      }];
+
+      localStorage.setItem('carrinho', JSON.stringify(carrinho));
+      window.location.href = 'carrinho.html';
+    }
+  </script>
+</body>
+</html>

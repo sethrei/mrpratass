@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout | Monte Leste</title>
+  <style>
+    body {
+      background-color: #120025;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 50px auto;
+      padding: 30px 20px;
+      border-radius: 20px;
+      background: #1a0033;
+      box-shadow: 0 0 20px #7700ff55;
+    }
+
+    .header {
+      text-align: center;
+      font-size: 24px;
+      color: #d1a8ff;
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+
+    .qr-section, .info-section {
+      flex: 1 1 450px;
+    }
+
+    .qr-section {
+      text-align: center;
+      background: #2b0047;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #8800ff;
+      box-shadow: 0 0 20px rgba(138, 43, 226, 0.2);
+    }
+
+    .qr-section h2 {
+      color: #d1a8ff;
+      margin-bottom: 10px;
+    }
+
+    .qr-section p {
+      color: #c4a8ff;
+      margin-bottom: 20px;
+    }
+
+    .qr-section img {
+      width: 220px;
+      height: 220px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+    }
+
+    .price {
+      font-size: 24px;
+      color: #e7c5ff;
+      margin: 10px 0;
+    }
+
+    .copy-btn {
+      background: linear-gradient(135deg, #aa00ff, #6e00ff);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 0 12px #c700ff88;
+      transition: all 0.3s ease;
+      font-size: 16px;
+    }
+
+    .copy-btn:hover {
+      box-shadow: 0 0 20px #c700ffaa;
+      transform: scale(1.03);
+    }
+
+    .info-box {
+      margin-bottom: 30px;
+      background: #2b0047;
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid #8800ff;
+    }
+
+    .info-box h3 {
+      color: #d1a8ff;
+      margin-bottom: 10px;
+    }
+
+    .info-box p, .info-box li {
+      color: #e7c5ff;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .info-box ul {
+      padding-left: 20px;
+      margin: 0;
+    }
+
+    .obs {
+      margin-top: 25px;
+      font-size: 13px;
+      color: #c4a8ff;
+      text-align: center;
+    }
+  </style>
+
+  <!-- SDK Mercado Pago -->
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="header">Pedido realizado com sucesso! 😄</div>
+    <div class="grid">
+      <div class="qr-section">
+        <h2>PIX</h2>
+        <p>Aguardando Pagamento</p>
+        <img id="qrCode" src="https://via.placeholder.com/220x220.png?text=QR+Code" alt="QR Code PIX">
+        <div class="price">R$ <span id="valorTotal">0,00</span></div>
+        <button class="copy-btn" onclick="copiarCodigoPix()">Copiar Código do QR Code</button>
+        <div id="button-container" style="margin-top: 20px;"></div>
+      </div>
+      <div class="info-section">
+        <div class="info-box">
+          <h3>Instruções</h3>
+          <ul>
+            <li>Abra o app do seu banco e entre na <strong>Área PIX</strong>.</li>
+            <li>Escolha a opção <strong>Pagar com QR Code</strong> ou <strong>Pix Copia e Cola</strong>.</li>
+            <li>Confira os dados do pagamento e confirme.</li>
+          </ul>
+        </div>
+
+        <div class="info-box">
+          <h3>Informação Importante</h3>
+          <p>Após finalizar a compra, o PIX gerado fica disponível por <strong>6 horas</strong>. Após esse prazo, seu pedido será cancelado automaticamente.</p>
+        </div>
+
+        <div class="info-box">
+          <h3>Detalhes do Pedido</h3>
+          <ul>
+            <li><strong>Pedido:</strong> #00123456789</li>
+            <li><strong>Pagamento:</strong> PIX</li>
+            <li><strong>Prazo de Entrega:</strong> 10 dias úteis</li>
+            <li><strong>Valor Total:</strong> R$ <span id="valorResumo">0,00</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <p class="obs">Após o pagamento, você será redirecionado automaticamente.</p>
+  </div>
+
+  <script>
+    const mp = new MercadoPago('APP_USR-91d5159c-f98b-4fa3-aa12-51000fd09229'); // Sua PUBLIC KEY
+    let codigoPix = '';
+
+    async function createPayment() {
+      const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+      let total = 0;
+      carrinho.forEach(item => {
+        total += item.preco * item.quantidade;
+      });
+
+      document.getElementById("valorTotal").innerText = total.toFixed(2).replace(".", ",");
+      document.getElementById("valorResumo").innerText = total.toFixed(2).replace(".", ",");
+
+      const response = await fetch('http://localhost:3000/criar-pix', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ valor: total })
+      });
+
+      const data = await response.json();
+      document.getElementById("qrCode").src = "data:image/png;base64," + data.qr_code_base64;
+      codigoPix = data.qr_code;
+
+      mp.checkout({
+        preference: {
+          id: data.preference_id
+        },
+        render: {
+          container: '#button-container',
+          label: 'Pagar com Mercado Pago'
+        }
+      });
+    }
+
+    function copiarCodigoPix() {
+      if (!codigoPix) return alert("Código ainda não gerado!");
+      navigator.clipboard.writeText(codigoPix)
+        .then(() => alert("Código PIX copiado para a área de transferência!"))
+        .catch(err => console.error("Erro ao copiar código: ", err));
+    }
+
+    window.onload = createPayment;
+  </script>
+</body>
+</html>

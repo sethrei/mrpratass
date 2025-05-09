@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrinho | Mr Pratas</title>
+  <style>
+    /* Estilo do carrinho */
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: 'Segoe UI', sans-serif;
+      background: #0a021c;
+      color: white;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #13032e;
+      padding: 30px;
+      border-radius: 15px;
+      border: 2px solid #b867ff;
+      box-shadow: 0 0 20px #b867ff44;
+    }
+
+    h1 {
+      color: #b867ff;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .produto-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #b867ff;
+      padding: 10px 0;
+    }
+
+    .produto-item img {
+      width: 60px;
+      height: auto;
+      border-radius: 10px;
+    }
+
+    .produto-info {
+      flex: 1;
+      margin-left: 15px;
+    }
+
+    .produto-preco, .produto-quantidade, .produto-total {
+      font-size: 16px;
+    }
+
+    .produto-remover {
+      color: #ff4c4c;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .total {
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #b867ff;
+    }
+
+    .frete {
+      font-size: 16px;
+      margin-top: 10px;
+      color: #b867ff;
+    }
+
+    .btn-finalizar {
+      background: #b867ff;
+      color: white;
+      padding: 15px 30px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      margin-top: 30px;
+      transition: 0.2s;
+    }
+
+    .btn-finalizar:hover {
+      opacity: 0.8;
+    }
+
+    .btn-descobrir {
+      background: #444;
+      color: white;
+      padding: 15px 30px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: 0.2s;
+    }
+
+    .btn-descobrir:hover {
+      opacity: 0.8;
+    }
+
+    .formulario-compra {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .formulario-compra div {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .formulario-compra input {
+      padding: 10px;
+      margin-right: 10px;
+      border-radius: 5px;
+      border: 1px solid #b867ff;
+      background-color: #1d0835;
+      color: white;
+      flex: 1;
+    }
+
+    .formulario-compra input:focus {
+      outline: none;
+    }
+
+    .check {
+      color: green;
+      font-size: 18px;
+      display: none;
+    }
+
+    .btn-finalizar:disabled {
+      background: #666;
+      cursor: not-allowed;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .produto-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .produto-info {
+        margin-left: 0;
+        margin-top: 10px;
+      }
+
+      .produto-item img {
+        width: 100px;
+        margin-bottom: 10px;
+      }
+
+      .total {
+        font-size: 18px;
+      }
+
+      .btn-finalizar {
+        font-size: 16px;
+        padding: 12px 24px;
+      }
+
+      .btn-descobrir {
+        font-size: 16px;
+        padding: 12px 24px;
+      }
+
+      .formulario-compra input {
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 15px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .produto-item {
+        padding: 8px 0;
+      }
+
+      .produto-preco, .produto-quantidade, .produto-total {
+        font-size: 14px;
+      }
+
+      .produto-remover {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Carrinho de Compras</h1>
+    <div id="itensCarrinho"></div>
+    <div class="total" id="totalCarrinho">Total: R$0,00</div>
+
+    <div class="frete" id="freteMensagem">Frete grátis para a sua primeira compra!<br>Entrega estimada em...</div>
+
+    <div class="formulario-compra">
+      <div>
+        <input type="text" id="nome" placeholder="Nome" required>
+        <div class="check" id="checkNome">✔</div>
+      </div>
+
+      <div>
+        <input type="text" id="telefone" placeholder="Telefone" required>
+        <div class="check" id="checkTelefone">✔</div>
+      </div>
+
+      <div>
+        <input type="email" id="email" placeholder="E-mail" required>
+        <div class="check" id="checkEmail">✔</div>
+      </div>
+
+      <div>
+        <input type="text" id="rua" placeholder="Rua" required>
+        <div class="check" id="checkRua">✔</div>
+      </div>
+
+      <div>
+        <input type="text" id="bairro" placeholder="Bairro" required>
+        <div class="check" id="checkBairro">✔</div>
+      </div>
+
+      <div>
+        <input type="text" id="numeroCasa" placeholder="Número da Casa" required>
+        <div class="check" id="checkNumeroCasa">✔</div>
+      </div>
+
+      <div>
+        <input type="text" id="cep" placeholder="CEP" required>
+        <div class="check" id="checkCep">✔</div>
+      </div>
+    </div>
+
+    <button class="btn-descobrir" onclick="window.location.href='index.html'">Descobrir Produtos</button>
+    <button class="btn-finalizar" id="finalizarCompra" onclick="finalizarCompra()" disabled>Finalizar Compra</button>
+  </div>
+
+  <script>
+    function calcularDataEntrega() {
+      const dataHoje = new Date();
+      dataHoje.setDate(dataHoje.getDate() + 7); // Adiciona 7 dias úteis
+      const opcoes = { year: 'numeric', month: 'long', day: 'numeric' };
+      return dataHoje.toLocaleDateString('pt-BR', opcoes);
+    }
+
+    function mostrarMensagemFrete() {
+      const formFields = [
+        document.getElementById('nome'),
+        document.getElementById('telefone'),
+        document.getElementById('email'),
+        document.getElementById('rua'),
+        document.getElementById('bairro'),
+        document.getElementById('numeroCasa'),
+        document.getElementById('cep')
+      ];
+
+      const allFilled = formFields.every(field => field.value !== '');
+      if (allFilled) {
+        setTimeout(() => {
+          const mensagem = `Frete grátis para sua primeira compra!<br>Entrega estimada em até ${calcularDataEntrega()}.`;
+          document.getElementById('freteMensagem').innerHTML = mensagem;
+        }, 3000); // "Carregamento" de 3 segundos
+      }
+    }
+
+    function checkForm() {
+      const formFields = [
+        document.getElementById('nome'),
+        document.getElementById('telefone'),
+        document.getElementById('email'),
+        document.getElementById('rua'),
+        document.getElementById('bairro'),
+        document.getElementById('numeroCasa'),
+        document.getElementById('cep')
+      ];
+
+      const btnFinalizar = document.getElementById('finalizarCompra');
+      let allFilled = true;
+
+      formFields.forEach(field => {
+        const checkIcon = document.getElementById('check' + field.id.charAt(0).toUpperCase() + field.id.slice(1));
+        
+        if (field.value === '') {
+          checkIcon.style.display = 'none'; 
+          allFilled = false;
+        } else if (field.value !== '') {
+          checkIcon.style.display = 'inline';
+        }
+      });
+
+      btnFinalizar.disabled = !allFilled;
+
+      if (allFilled) {
+        mostrarMensagemFrete();
+      }
+    }
+
+    document.getElementById('telefone').addEventListener('input', function() {
+      this.value = aplicarMascaraTelefone(this.value);
+      checkForm();
+    });
+
+    document.getElementById('cep').addEventListener('blur', function() {
+      const cep = this.value.replace(/\D/g, '');
+
+      if (cep.length === 8) {
+        fetch(`https://viacep.com.br/ws/${cep}/json/`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.localidade) {
+              document.getElementById('rua').value = data.logradouro;
+              document.getElementById('bairro').value = data.bairro;
+              checkForm();
+            } else {
+              alert('CEP não encontrado.');
+            }
+          });
+      }
+    });
+
+    window.onload = function() {
+      const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+      const itensCarrinho = document.getElementById('itensCarrinho');
+      itensCarrinho.innerHTML = '';
+
+      if (carrinho.length === 0) {
+        itensCarrinho.innerHTML = '<p style="color: #ccc;">Seu carrinho está vazio.</p>';
+      } else {
+        let total = 0;
+
+        carrinho.forEach((item, index) => {
+          const itemElement = document.createElement('div');
+          itemElement.classList.add('produto-item');
+          
+          itemElement.innerHTML = `
+            <img src="${item.img}" alt="${item.nome}">
+            <div class="produto-info">
+              <div class="produto-nome">${item.nome}</div>
+              <div class="produto-preco">Preço: R$${item.preco.toFixed(2).replace('.', ',')}</div>
+              <div class="produto-quantidade">Quantidade: ${item.quantidade}</div>
+              <div class="produto-total">Total: R$${(item.preco * item.quantidade).toFixed(2).replace('.', ',')}</div>
+            </div>
+            <div class="produto-remover" onclick="removerItem(${index})">Remover</div>
+          `;
+          
+          itensCarrinho.appendChild(itemElement);
+          total += item.preco * item.quantidade;
+        });
+
+        document.getElementById('totalCarrinho').innerHTML = `Total: R$${total.toFixed(2).replace('.', ',')}`;
+      }
+
+      checkForm();
+    };
+
+    function finalizarCompra() {
+      const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+      if (carrinho.length > 0) {
+        window.location.href = 'checkout.html';
+      } else {
+        alert('Seu carrinho está vazio.');
+      }
+    }
+
+    function removerItem(index) {
+      const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+      carrinho.splice(index, 1);
+      localStorage.setItem('carrinho', JSON.stringify(carrinho));
+      window.location.reload();
+    }
+  </script>
+</body>
+</html>

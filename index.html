@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mr Pratas | Atacado</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0a021c;
+      color: white;
+      padding: 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #b867ff;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn {
+      border: 1px solid #b867ff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      color: #b867ff;
+      background: transparent;
+      cursor: pointer;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+
+    h2 {
+      font-size: 26px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+    }
+
+    .category.destaques h2 {
+      color: #b867ff;
+    }
+
+    .category.destaques h2::before {
+      content: '★';
+      display: inline-block;
+      color: #b867ff;
+      font-size: 22px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 800px) {
+      .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .product-card {
+      border: 1px solid #b867ff;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background: #13032e;
+      cursor: pointer;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 0 15px #b867ff;
+    }
+
+    .product-card img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 10px;
+    }
+
+    .product-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .product-price {
+      color: #b867ff;
+      margin-bottom: 10px;
+    }
+
+    .pix-info {
+      color: #aaa;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .buy-btn {
+      background: white;
+      color: black;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .category {
+      margin-bottom: 60px;
+    }
+
+    .show-more-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      background: #b867ff;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .category.destaques {
+      border: 2px solid #b867ff;
+      border-radius: 15px;
+      padding: 20px;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="logo" href="#" onclick="location.reload()">Mr Pratas | VAREJO E FORNECEDOR</a>
+    <div>
+      <a href="login.html" class="btn">Entrar</a>
+      <button class="btn">Carrinho</button>
+    </div>
+  </header>
+
+  <div class="category destaques">
+    <h2>Destaques da Semana</h2>
+    <div class="product-grid" id="destaques"></div>
+  </div>
+
+  <div class="category">
+    <h2>Correntes</h2>
+    <div class="product-grid" id="correntes"></div>
+    <button class="show-more-btn" onclick="showMore('correntes')">Mostrar Mais</button>
+  </div>
+
+  <div class="category">
+    <h2>Anéis</h2>
+    <div class="product-grid" id="aneis"></div>
+    <button class="show-more-btn" onclick="showMore('aneis')">Mostrar Mais</button>
+  </div>
+
+  <footer style="background: #13032e; padding: 40px 20px; text-align: center; border-top: 1px solid #b867ff; margin-top: 80px;">
+    <p style="color: #b867ff; font-size: 18px; font-weight: bold;">Mr Pratas | Atacado</p>
+    <p style="color: #aaa; margin: 10px 0;">Todos os direitos reservados © 2025</p>
+    <p style="color: #aaa;">Contato: suporte@mrpratas.com.br</p>
+    <p style="color: #aaa;">WhatsApp: (11) 11 93349-8502</p>
+  </footer>
+
+  <script>
+    const produtos = {
+      destaques: [
+        { nome: 'Corrente Grumet', preco: 'R$1', img:'imagens/GRUMET3MM.png' },
+        { nome: 'Anel Vazado', preco: 'R$80', img: 'https://via.placeholder.com/150' },
+        { nome: 'Anel Solitário', preco: 'R$200', img: 'https://via.placeholder.com/150' },
+        { nome: 'Pulseira Cordão Baiano', preco: 'R$110', img: 'https://via.placeholder.com/150' },
+        { nome: 'Anel Trabalhado', preco: 'R$120', img: 'https://via.placeholder.com/150' },
+        { nome: 'Corrente Baiana', preco: 'R$140', img: 'imagens/BAIANA3MM.png' },
+        { nome: 'Anel Fino', preco: 'R$60', img: 'https://via.placeholder.com/150' },
+        { nome: 'Corrente Quadrada', preco: 'R$170', img: 'https://via.placeholder.com/150' },
+        { nome: 'Anel Duplo', preco: 'R$90', img: 'https://via.placeholder.com/150' }
+      ],
+      correntes: [
+        { nome: 'Corrente Grumet', preco: 'R$150', img: 'imagens/GRUMET3MM.png'},
+        { nome: 'Corrente Baiana', preco: 'R$140', img: 'imagens/BAIANA3MM.png' },
+        { nome: 'Corrente Quadrada', preco: 'R$170', img: 'imagens/quadrada 3mm.png' },
+        { nome: 'Corrente Fina', preco: 'R$130', img: 'imagens/fina 1,5.png' },
+        { nome: 'Corrente Elos', preco: 'R$160', img: 'imagens/elos 4mm.png' },
+        { nome: 'Corrente Italiana', preco: 'R$180', img: 'https://via.placeholder.com/150' }
+      ],
+      aneis: [
+        { nome: 'Anel Vazado', preco: 'R$80', img: 'https://via.placeholder.com/150' },
+        { nome: 'Anel Solitário', preco: 'R$200', img: 'https://via.placeholder.com/150' },
+        { nome: 'Anel Trabalhado', preco: 'R$120', img: 'https://via.placeholder.com/150' },
+        { nome: 'Anel Fino', preco: 'R$60', img: 'https://via.placeholder.com/150' },
+        { nome: 'Anel Duplo', preco: 'R$90', img: 'https://via.placeholder.com/150' },
+        { nome: 'Anel Masculino', preco: 'R$110', img: 'https://via.placeholder.com/150' }
+      ]
+    };
+
+    const visibleCount = { destaques: 8, correntes: 8, aneis: 8 };
+
+    function renderProducts(category) {
+      const container = document.getElementById(category);
+      container.innerHTML = '';
+      produtos[category].slice(0, visibleCount[category]).forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'product-card';
+        div.innerHTML = `
+          <img src="${p.img}" alt="${p.nome}" />
+          <div class="product-title">${p.nome}</div>
+          <div class="product-price">${p.preco}</div>
+          <div class="pix-info">À vista no PIX</div>
+          <button class="buy-btn">Comprar Agora</button>
+        `;
+        div.onclick = () => {
+          localStorage.setItem('produtoSelecionado', JSON.stringify(p));
+          window.location.href = 'produto.html';
+        };
+        container.appendChild(div);
+      });
+    }
+
+    function showMore(category) {
+      visibleCount[category] += 4;
+      renderProducts(category);
+    }
+
+    renderProducts('destaques');
+    renderProducts('correntes');
+    renderProducts('aneis');
+  </script>
+</body>
+</html>
